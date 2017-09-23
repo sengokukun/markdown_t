@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>マークダウンテスト</title>
+	<link rel="stylesheet" href="reset.css">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://unpkg.com/marked@0.3.6"></script>
+	<script src="https://unpkg.com/lodash@4.16.0"></script>
+	<script src="vue.min.js"></script>
+</head>
+
+<body>
+	<div class="box">
+		<header><h1>左の画面で仮書きできます。</h1></header>
+		<div id="editor">
+			<textarea :value="input" @input="update"></textarea>
+			<div v-html="outputMarkDown"></div>
+		</div>
+	</div>
+
+	<script>
+		new Vue({
+			el: '#editor',
+			data: {
+				input:
+				 '# 見出し \n## 中見出し\n### さらに見出しがある場合 \n\n**太文字にする** \n\n### 順序なしリスト \n- リスト \n- リスト \n\n### 順番付きリスト \n1. リスト \n1. リスト \n\n### 引用 \n \> 文頭に「>」を置くことで引用になります。 \n\n### 水平線 \n --- \n\n### リンク \n 例) TRUNKは[こちら](https://trunk.fm/) \n\n 例) [リンクテキスト](https://trunk.fm/) \n\n### 画像埋め込み \n ![代替テキスト]\(画像のURL) \n ![TRUNK]\(http://s3-ap-northeast-1.amazonaws.com/trunk-room-production/wp-content/uploads/2016/01/1000x1000_length_bg.png) \n\n### テーブル \n |   | スケジュール | \n |---|----------------------------------| \n | 1 | pug/gulpとは | \n | 2 | gulpをインストールして実際に書いてみる | \n | 3 | pugをインストールして実際に書いてみる | \n\n **このブラウザ上では表組みになっていないように見えますが、管理画面から登録し、みてみるとちゃんと表になっているはずです！**'
+			},
+			computed: {
+				outputMarkDown: function() {
+					return marked(this.input, {
+						sanitize: true
+					})
+				}
+			},
+			methods: {
+				update: _.debounce(function(e) {
+					this.input = e.target.value
+				}, 300)
+			}
+		})
+	</script>
+
+</body>
+
+</html>
